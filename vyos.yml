@@ -1,0 +1,38 @@
+name: vyos
+
+topology:
+  nodes:
+    xrd1:
+      kind: cisco_xrd
+      image: ios-xr:24.3.2
+      startup-config: clab-vyos-xrd1-startup.cfg
+    vyos1:
+      kind: vyosnetworks_vyos
+      image: vyos:latest
+      startup-config: config.boot
+      binds:
+        - ./vyos1:/opt/custom-frr
+        - ./cmd.sh:/cmd.sh
+      exec:
+        - bash /cmd.sh
+    vyos2:
+      kind: vyosnetworks_vyos
+      image: vyos:latest
+      startup-config: config.boot
+      binds:
+        - ./vyos2:/opt/custom-frr
+        - ./cmd.sh:/cmd.sh
+      exec:
+        - bash /cmd.sh
+    tacacs:
+      kind: linux
+      image: aaa:1.0
+      binds:
+        - tacacs/tac_plus.conf:/etc/tac_plus.conf
+        - tacacs/cmd.sh:/cmd.sh
+      exec:
+       - sh /cmd.sh
+  links:
+    - endpoints: ["tacacs:eth1", "xrd1:Gi0-0-0-1"]
+    - endpoints: ["xrd1:Gi0-0-0-0", "vyos1:eth1"]
+    - endpoints: ["vyos1:eth2", "vyos2:eth1"]

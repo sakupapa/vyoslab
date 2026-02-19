@@ -1,0 +1,16 @@
+---
+- name: Get FRRouting running-config
+  hosts: routers
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Get running-config via vtysh
+      ansible.builtin.command: vtysh -c "show running-config"
+      register: frr_config
+
+    - name: Save running-config to file
+      ansible.builtin.copy:
+        content: "{{ frr_config.stdout }}"
+        dest: "{{ inventory_hostname }}_frr_running.conf"
+        mode: '0644'
