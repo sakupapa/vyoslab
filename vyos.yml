@@ -9,19 +9,19 @@ topology:
     vyos1:
       kind: vyosnetworks_vyos
       image: vyos:latest
-      startup-config: config.boot
+      startup-config: vyos1/config.boot
       binds:
-        - ./vyos1:/opt/custom-frr
-        - ./cmd.sh:/cmd.sh
+        - vyos1/custom-frr:/opt/custom-frr
+        - vyos1/cmd.sh:/cmd.sh
       exec:
         - bash /cmd.sh
     vyos2:
       kind: vyosnetworks_vyos
       image: vyos:latest
-      startup-config: config.boot
+      startup-config: vyos2/config.boot
       binds:
-        - ./vyos2:/opt/custom-frr
-        - ./cmd.sh:/cmd.sh
+        - vyos2/custom-frr:/opt/custom-frr
+        - vyos2/cmd.sh:/cmd.sh
       exec:
         - bash /cmd.sh
     tacacs:
@@ -31,8 +31,28 @@ topology:
         - tacacs/tac_plus.conf:/etc/tac_plus.conf
         - tacacs/cmd.sh:/cmd.sh
       exec:
-       - sh /cmd.sh
+        - bash /cmd.sh
+    chrome:
+      kind: linux
+      image: nkpro/chrome-vnc:latest
+      ports:
+        - "5900:5900"
+      binds:
+        - chrome/cmd.sh:/cmd.sh
+      exec:
+        - bash /cmd.sh
+    nginx:
+      kind: linux
+      image: nginx:1.0
+      ports:
+        - "8080:80"
+      binds:
+        - nginx/cmd.sh:/cmd.sh
+      exec:
+        - bash /cmd.sh
   links:
     - endpoints: ["tacacs:eth1", "xrd1:Gi0-0-0-1"]
     - endpoints: ["xrd1:Gi0-0-0-0", "vyos1:eth1"]
+    - endpoints: ["xrd1:Gi0-0-0-2", "chrome:eth1"]
+    - endpoints: ["xrd1:Gi0-0-0-3", "nginx:eth1"]
     - endpoints: ["vyos1:eth2", "vyos2:eth1"]

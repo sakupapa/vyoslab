@@ -21,6 +21,11 @@ pki {
         }
     }
 }
+protocols {
+    mpls {
+        interface eth1
+    }
+}
 service {
     https {
         api {
