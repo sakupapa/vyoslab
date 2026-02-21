@@ -7,6 +7,10 @@ interfaces {
             tso
         }
     }
+    ethernet eth2 {
+        address 192.168.2.254/24
+        vrf ent
+    }
     loopback lo {
     }
 }
@@ -24,7 +28,6 @@ pki {
 protocols {
     mpls {
         interface eth1
-        interface eth2
     }
 }
 service {
@@ -75,7 +78,7 @@ system {
             speed "115200"
         }
     }
-    host-name "vyos1"
+    host-name "vyos3"
     login {
         tacacs {
             server 10.3.0.1 {
@@ -104,6 +107,11 @@ system {
                 level "debug"
             }
         }
+    }
+}
+vrf {
+    name ent {
+        table 100
     }
 }
 
