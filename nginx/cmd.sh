@@ -1,4 +1,4 @@
 #!/bin/bash
 
-ip addr add 192.168.2.1/24 dev eth1
-ip route add 192.168.1.0/24 via 192.168.2.254
+ip addr add 1.0.0.1/24 dev eth1
+ip route add 100.0.0.0/8 via 1.0.0.254

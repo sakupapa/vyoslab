@@ -23,10 +23,6 @@ pki {
     }
 }
 protocols {
-    mpls {
-        interface eth1
-        interface eth2
-    }
 }
 service {
     https {

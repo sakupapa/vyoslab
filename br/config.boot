@@ -8,6 +8,9 @@ interfaces {
         }
         vrf Mgmt
     }
+    ethernet eth1 {
+         address 192.168.1.254/24
+    }
     loopback lo {
     }
 }
@@ -23,12 +26,23 @@ pki {
     }
 }
 protocols {
-    mpls {
-        interface eth1
-        interface eth2
-    }
 }
 service {
+     dhcp-server {
+         shared-network-name HOME {
+             subnet 192.168.1.0/24 {
+                 option {
+                     default-router 192.168.1.254
+                     name-server 100.0.0.1
+                 }
+                 range 0 {
+                     start 192.168.1.1
+                     stop 192.168.1.10
+                 }
+                 subnet-id 1
+             }
+         }
+     }
     https {
         api {
             keys {
@@ -80,14 +94,8 @@ system {
             speed "115200"
         }
     }
-    host-name "vyos1"
+    host-name "br"
     login {
-        tacacs {
-            server 10.3.0.1 {
-                key "cisco123"
-                port "49"
-            }
-        }
         user admin {
             authentication {
                 encrypted-password "$6$rounds=656000$X9PW0U3/7SaNaviB$REBqhlRB/hH962.bO2PiQuNf1kBwN2rWDlMKpbY8/lV1wCLkFfkXsXWNbETzF5wcQa1EKsZxuqGkgWQAZFXAT/"

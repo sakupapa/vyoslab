@@ -6,9 +6,10 @@ interfaces {
             sg
             tso
         }
+        vrf Mgmt
     }
     ethernet eth1 {
-         address 192.168.1.254/24
+         address 100.1.0.254/24
          vrf ent
     }
     loopback lo {
@@ -31,6 +32,21 @@ protocols {
     }
 }
 service {
+   dhcp-server {
+     shared-network-name CE {
+         subnet 100.1.0.0/24 {
+             option {
+                 default-router 100.1.0.254
+                 name-server 100.0.0.1
+             }
+             range 0 {
+                 start 100.1.0.1
+                 stop 100.1.0.100
+             }
+             subnet-id 1
+           }
+       }
+    }
     https {
         api {
             keys {
@@ -63,6 +79,10 @@ service {
         server time2.vyos.net {
         }
         server time3.vyos.net {
+        }
+    }
+    snmp {
+        community cisco {
         }
     }
     ssh {
@@ -110,8 +130,11 @@ system {
     }
 }
 vrf {
-    name ent {
+    name Mgmt {
         table 100
+    }
+    name ent {
+        table 101
     }
 }
 

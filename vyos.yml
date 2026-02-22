@@ -2,6 +2,23 @@ name: vyos
 
 topology:
   nodes:
+    br:
+      kind: linux
+      image: br:1.0
+      binds:
+        - br/dnsmasq.conf:/etc/dnsmasq.conf
+        - br/cmd.sh:/cmd.sh
+      exec:
+        - bash /cmd.sh
+    r:
+      kind: vyosnetworks_vyos
+      image: vyos:latest
+      startup-config: r/config.boot
+      binds:
+        - r/custom-frr:/opt/custom-frr
+        - r/cmd.sh:/cmd.sh
+      exec:
+        - bash /cmd.sh
     vyos1:
       kind: vyosnetworks_vyos
       image: vyos:latest
@@ -39,7 +56,7 @@ topology:
         - bash /cmd.sh
     chrome:
       kind: linux
-      image: nkpro/chrome-vnc:latest
+      image: chrome_vnc:latest
       ports:
         - "5900:5900"
       binds:
@@ -55,10 +72,15 @@ topology:
         - nginx/cmd.sh:/cmd.sh
       exec:
         - bash /cmd.sh
+    br-dc:
+      kind: bridge
   links:
-    - endpoints: ["chrome:eth1", "vyos1:eth1"]
+    - endpoints: ["chrome:eth1", "br:eth1"]
+    - endpoints: ["br:eth2", "vyos1:eth1"]
     - endpoints: ["vyos1:eth2", "vyos2:eth1"]
     - endpoints: ["vyos2:eth2", "vyos3:eth1"]
     - endpoints: ["vyos2:eth3", "tacacs:eth1"]
-    - endpoints: ["vyos3:eth2", "nginx:eth1"]
+    - endpoints: ["vyos3:eth2", "br-dc:br1p1"]
+    - endpoints: ["r:eth1", "br-dc:br1p2"]
+    - endpoints: ["r:eth2", "nginx:eth1"]
 

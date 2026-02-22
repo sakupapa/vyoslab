@@ -1,4 +1,4 @@
 #!/bin/bash
-
-ip addr add 192.168.1.1/24 dev eth1
-ip route add 192.168.2.0/24 via 192.168.1.254
+ip route delete default dev eth0
+dhclient eth1
+ip route add 10.190.0.0/16 via 172.20.20.1
