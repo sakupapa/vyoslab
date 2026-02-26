@@ -48,7 +48,7 @@ topology:
         - bash /cmd.sh
     tacacs:
       kind: linux
-      image: aaa:1.0
+      image: tacacs:1.0
       binds:
         - tacacs/tac_plus.conf:/etc/tac_plus.conf
         - tacacs/cmd.sh:/cmd.sh
@@ -56,7 +56,7 @@ topology:
         - bash /cmd.sh
     chrome:
       kind: linux
-      image: chrome_vnc:latest
+      image: chrome:1.0
       ports:
         - "5900:5900"
       binds:
